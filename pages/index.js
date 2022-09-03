@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import { useState } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import ShoppingItem from '../components/ShoppingItem';
+import Image from 'next/image';
 
 export async function getServerSideProps() {
   const response = await fetch('https://pokeapi.co/api/v2/item/');
@@ -40,7 +42,20 @@ export default function Home({ items }) {
 
   return (
     <main>
-      <Header>Poké Mart Online Shop</Header>
+      <AppHeader>
+        <Header>Poké Mart Online Shop</Header>
+        <Link href="/basket">
+          <a>
+            <Image
+              src="/shopping_cart_icon.png"
+              alt="Shopping Cart"
+              width={60}
+              height={60}
+              layout="fixed"
+            />
+          </a>
+        </Link>
+      </AppHeader>
       {cart.length > 0 && (
         <>
           <Header size="medium">Cart</Header>
@@ -91,4 +106,13 @@ const Cart = styled.ul`
   margin: 0 auto;
   padding: 0;
   width: 90%;
+`;
+
+const AppHeader = styled.header`
+  display: flex;
+  justify-content: space-between;
+
+  a {
+    padding-top: 0.5rem;
+  }
 `;
