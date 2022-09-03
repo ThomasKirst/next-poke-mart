@@ -1,6 +1,7 @@
-import Image from 'next/image';
 import { useState } from 'react';
+import styled from 'styled-components';
 import Header from '../components/Header';
+import ShoppingItem from '../components/ShoppingItem';
 
 export async function getServerSideProps() {
   const response = await fetch('https://pokeapi.co/api/v2/item/');
@@ -27,29 +28,14 @@ export async function getServerSideProps() {
   };
 }
 
-function ShoppingItem({ item, onAddItemToCart }) {
-  return (
-    <li>
-      <Image
-        src={item.sprites?.default}
-        width={30}
-        height={30}
-        alt={item.name}
-      />
-      <div>
-        <h3>{item.name}</h3>
-        <p>{item.cost} ¥</p>
-        <button onClick={() => onAddItemToCart(item)}>Add Item</button>
-      </div>
-    </li>
-  );
-}
-
 export default function Home({ items }) {
   const [cart, setCart] = useState([]);
-  console.log(items);
+
   function addToCart(item) {
-    setCart([item, ...cart]);
+    setCart([...cart, item]);
+  }
+  function removeFromCart(item) {
+    setCart(cart.filter((cartItem) => item.id !== cartItem.id));
   }
 
   return (
@@ -57,16 +43,22 @@ export default function Home({ items }) {
       <Header>Poké Mart Online Shop</Header>
       {cart.length > 0 && (
         <>
-          <h2>Cart</h2>
-          <ul>
+          <Header size="medium">Cart</Header>
+          <Cart>
             {cart.map((cartItem) => (
-              <ShoppingItem key={cartItem.id} item={cartItem} />
+              <ShoppingItem
+                key={cartItem.id}
+                item={cartItem}
+                onRemoveItemFromCart={removeFromCart}
+                isInCart
+              />
             ))}
-          </ul>
+          </Cart>
           <hr />
         </>
       )}
-      <ul>
+      <Header size="medium">Search Items</Header>
+      <ProductList>
         {items &&
           items.map((item) => (
             <ShoppingItem
@@ -75,7 +67,28 @@ export default function Home({ items }) {
               onAddItemToCart={addToCart}
             />
           ))}
-      </ul>
+      </ProductList>
     </main>
   );
 }
+
+const ProductList = styled.ul`
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: auto auto;
+  justify-items: center;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: 60%;
+`;
+
+const Cart = styled.ul`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin: 0 auto;
+  padding: 0;
+  width: 90%;
+`;
