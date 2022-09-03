@@ -10,7 +10,7 @@ export default function ShoppingItem({
   return (
     <Product isInCart={isInCart}>
       <Image
-        src={item.sprites?.default}
+        src={item.image}
         width={30}
         height={30}
         layout="fixed"

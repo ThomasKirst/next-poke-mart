@@ -1,9 +1,10 @@
 import Link from 'next/link';
-import { useState } from 'react';
 import styled from 'styled-components';
 import Header from '../components/Header';
 import ShoppingItem from '../components/ShoppingItem';
 import Image from 'next/image';
+
+import useLocalStorageState from 'use-local-storage-state';
 
 export async function getServerSideProps() {
   const response = await fetch('https://pokeapi.co/api/v2/item/');
@@ -18,7 +19,7 @@ export async function getServerSideProps() {
         id,
         name,
         cost,
-        sprites,
+        image: sprites?.default,
       };
     })
   );
@@ -31,11 +32,23 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ items }) {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useLocalStorageState('_cart', { defaultValue: [] });
 
   function addToCart(item) {
-    setCart([...cart, item]);
+    const existingCartItem = cart.find((cartItem) => cartItem.id === item.id);
+    if (existingCartItem) {
+      setCart(
+        cart.map((cartItem) =>
+          cartItem.id === existingCartItem.id
+            ? { ...existingCartItem, count: existingCartItem.count + 1 }
+            : cartItem
+        )
+      );
+    } else {
+      setCart([...cart, { ...item, count: 1 }]);
+    }
   }
+
   function removeFromCart(item) {
     setCart(cart.filter((cartItem) => item.id !== cartItem.id));
   }
@@ -53,6 +66,7 @@ export default function Home({ items }) {
               height={60}
               layout="fixed"
             />
+            {cart.length > 0 && <Counter>{cart.length}</Counter>}
           </a>
         </Link>
       </AppHeader>
@@ -114,5 +128,19 @@ const AppHeader = styled.header`
 
   a {
     padding-top: 0.5rem;
+    position: relative;
   }
+`;
+
+const Counter = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: purple;
+  color: ivory;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom: 0.5rem;
 `;
