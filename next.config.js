@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: true, // by default / try false to make local storage work
   swcMinify: true,
   images: {
     domains: ['raw.githubusercontent.com'],

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import ShoppingItem from '../components/ShoppingItem';
 import Image from 'next/image';
-
+import { useState, useEffect } from 'react';
 import useLocalStorageState from 'use-local-storage-state';
 
 export async function getServerSideProps() {
@@ -32,7 +32,21 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ items }) {
-  const [cart, setCart] = useLocalStorageState('_cart', { defaultValue: [] });
+  console.log('RENDER');
+
+  //const [cart, setCart] = useLocalStorageState('_cart', { defaultValue: [] });
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const storedItems = JSON.parse(localStorage.getItem('_cart'));
+    debugger;
+    setCart(storedItems ?? []);
+  }, []);
+
+  useEffect(() => {
+    debugger;
+    localStorage.setItem('_cart', JSON.stringify(cart));
+  }, [cart]);
 
   function addToCart(item) {
     const existingCartItem = cart.find((cartItem) => cartItem.id === item.id);
