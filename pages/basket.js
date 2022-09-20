@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import styled from 'styled-components';
-import useLocalStorageState from 'use-local-storage-state';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 import Header from '../components/Header';
 
 export default function ShoppingCart() {
-  const [cart, _] = useLocalStorageState('_cart', { defaultValue: [] });
+  const [cart] = useLocalStorage('_cart', []);
 
   return (
     <main>
