@@ -25,11 +25,11 @@ export default function useLocalStorage(key, initialState) {
 
   // Read the localStorage from the client
   useEffect(() => {
-    const stored = JSON.parse(window.localStorage.getItem(key));
+    const stored = window.localStorage.getItem(key);
     // When the stored value === null
     // Then the key does not exist, and we don't want to perform an update
     if (stored !== null) {
-      setStateValue(stored);
+      setStateValue(JSON.parse(stored));
     }
   }, [key]);
 
