@@ -3,8 +3,7 @@ import styled from 'styled-components';
 import Header from '../components/Header';
 import ShoppingItem from '../components/ShoppingItem';
 import Image from 'next/image';
-
-import useLocalStorageState from 'use-local-storage-state';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 export async function getServerSideProps() {
   const response = await fetch('https://pokeapi.co/api/v2/item/');
@@ -32,7 +31,7 @@ export async function getServerSideProps() {
 }
 
 export default function Home({ items }) {
-  const [cart, setCart] = useLocalStorageState('_cart', { defaultValue: [] });
+  const [cart, setCart] = useLocalStorage('_cart', []);
 
   function addToCart(item) {
     const existingCartItem = cart.find((cartItem) => cartItem.id === item.id);
